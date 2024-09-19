@@ -30,19 +30,9 @@
 }
 
 .status-name img {
-    height: 15px;
+    height: 20px;
+    width: 20px;
+    border-radius: 70%;
     margin-right: 10px;
 
-}
-
-.status-count {
-    display: flex;
-    align-items: center;
-
-}
-
-.ticket-count {
-    margin-left: 20px;
-    font-size: small;
-    opacity: 50%;
 }

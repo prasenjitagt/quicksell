@@ -1,11 +1,11 @@
 import React from 'react'
-import '../css/card.css'
+import '../css/priorityCard.css'
 import MyImage from '../assets/images/1.jpg'
 import TodoIcon from '../assets/icons/To-do.svg'
 
 
 
-const DiplayCard = ({ ticketId, ticketTitle, ticketTagFeatureRequest, priorityIcon }) => {
+const PriorityDiplayCard = ({ ticketId, ticketTitle, ticketTagFeatureRequest, priorityIcon }) => {
 
 
     const truncateTitle = (title, maxLength) => {
@@ -28,7 +28,6 @@ const DiplayCard = ({ ticketId, ticketTitle, ticketTagFeatureRequest, priorityIc
 
 
             <section className='bottom-section'>
-                <img className='priority-icon' src={priorityIcon} alt="icon" />
                 <div>
 
                     <img src={TodoIcon} alt="icon" />
@@ -45,4 +44,4 @@ const DiplayCard = ({ ticketId, ticketTitle, ticketTagFeatureRequest, priorityIc
     )
 }
 
-export default DiplayCard
+export default PriorityDiplayCard

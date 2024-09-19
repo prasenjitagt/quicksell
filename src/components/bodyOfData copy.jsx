@@ -21,7 +21,8 @@ const BodyOfData = () => {
         const getData = async () => {
             try {
                 const res = await axios.get(link);
-                setData(res.data);
+                const serverData = await res.data;
+                setData(serverData);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -30,7 +31,6 @@ const BodyOfData = () => {
         getData();
     }, []);
 
-    // Ensure that tickets are available and Statuses is correctly computed
     const Statuses = [...new Set(data.tickets.map(ticket => ticket.status))];
 
     const getPriorityIcon = (priority) => {
@@ -40,7 +40,7 @@ const BodyOfData = () => {
             case 2: return priority2Icon;
             case 3: return priority3Icon;
             case 4: return priority4Icon;
-            default: return null;
+            default: return null; // or a default icon if needed
         }
     };
 
@@ -48,6 +48,7 @@ const BodyOfData = () => {
         <div className='body-data'>
             {Statuses.map(status => {
                 let icon;
+
                 if (status === 'Todo') {
                     icon = TodoIcon;
                 } else if (status === 'In progress') {
@@ -56,35 +57,32 @@ const BodyOfData = () => {
                     icon = BacklogIcon;
                 }
 
-                const filteredTickets = data.tickets.filter(ticket => ticket.status === status);
-                const ticketCount = filteredTickets.length;
-
                 return (
                     <div className='status-data' key={status}>
                         <div className='status-name'>
                             <div className='status-div'>
                                 {icon && <img src={icon} alt="icon" />}
                                 <p>{status}</p>
-
-
                             </div>
 
                             <div className='status-div'>
-                                <img src={addIcon} alt="Add icon" />
-                                <img src={ThreeDotIcon} alt="Menu icon" />
+                                <img src={addIcon} alt="icon" />
+                                <img src={ThreeDotIcon} alt="icon" />
                             </div>
                         </div>
 
                         <div>
-                            {filteredTickets.map(ticket => (
-                                <DiplayCard
-                                    key={ticket.id}
-                                    ticketId={ticket.id}
-                                    ticketTagFeatureRequest={ticket.tag[0]}
-                                    ticketTitle={ticket.title}
-                                    priorityIcon={getPriorityIcon(ticket.priority)}
-                                />
-                            ))}
+                            {data.tickets
+                                .filter(ticket => ticket.status === status)
+                                .map(ticket => (
+                                    <DiplayCard
+                                        key={ticket.id}
+                                        ticketId={ticket.id}
+                                        ticketTagFeatureRequest={ticket.tag[0]}
+                                        ticketTitle={ticket.title}
+                                        priorityIcon={getPriorityIcon(ticket.priority)}
+                                    />
+                                ))}
                         </div>
                     </div>
                 );

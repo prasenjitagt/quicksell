@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import '../css/body.css';
+import '../css/bodyUser.css';
 import axios from 'axios';
-import InProgressIcon from '../assets/icons/in-progress.svg';
-import TodoIcon from '../assets/icons/To-do.svg';
-import BacklogIcon from '../assets/icons/Backlog.svg';
 import ThreeDotIcon from '../assets/icons/3 dot menu.svg';
 import addIcon from '../assets/icons/add.svg';
 import DiplayCard from './displayCard';
@@ -12,16 +9,19 @@ import priority1Icon from '../assets/icons/Img - Low Priority.svg';
 import priority2Icon from '../assets/icons/Img - Medium Priority.svg';
 import priority3Icon from '../assets/icons/Img - High Priority.svg';
 import priority4Icon from '../assets/icons/SVG - Urgent Priority grey.svg';
+import MyImage from '../assets/images/1.jpg'
 
-const BodyOfData = () => {
+
+const BodyOfDataUser = () => {
     const link = "https://api.quicksell.co/v1/internal/frontend-assignment";
-    const [data, setData] = useState({ tickets: [] });
+    const [data, setData] = useState({ tickets: [], users: [] });
 
     useEffect(() => {
         const getData = async () => {
             try {
                 const res = await axios.get(link);
-                setData(res.data);
+                const serverData = await res.data;
+                setData(serverData);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -30,9 +30,6 @@ const BodyOfData = () => {
         getData();
     }, []);
 
-    // Ensure that tickets are available and Statuses is correctly computed
-    const Statuses = [...new Set(data.tickets.map(ticket => ticket.status))];
-
     const getPriorityIcon = (priority) => {
         switch (priority) {
             case 0: return priority0Icon;
@@ -40,43 +37,30 @@ const BodyOfData = () => {
             case 2: return priority2Icon;
             case 3: return priority3Icon;
             case 4: return priority4Icon;
-            default: return null;
+            default: return null; // or a default icon if needed
         }
     };
 
     return (
         <div className='body-data'>
-            {Statuses.map(status => {
-                let icon;
-                if (status === 'Todo') {
-                    icon = TodoIcon;
-                } else if (status === 'In progress') {
-                    icon = InProgressIcon;
-                } else if (status === 'Backlog') {
-                    icon = BacklogIcon;
-                }
-
-                const filteredTickets = data.tickets.filter(ticket => ticket.status === status);
-                const ticketCount = filteredTickets.length;
-
-                return (
-                    <div className='status-data' key={status}>
-                        <div className='status-name'>
-                            <div className='status-div'>
-                                {icon && <img src={icon} alt="icon" />}
-                                <p>{status}</p>
-
-
-                            </div>
-
-                            <div className='status-div'>
-                                <img src={addIcon} alt="Add icon" />
-                                <img src={ThreeDotIcon} alt="Menu icon" />
-                            </div>
+            {data.users.map(user => (
+                <div className='status-data' key={user.id}>
+                    <div className='status-name'>
+                        <div className='status-div'>
+                            <img src={MyImage} className='my-image' alt="user" />
+                            <p>{user.name}</p>
                         </div>
 
-                        <div>
-                            {filteredTickets.map(ticket => (
+                        <div className='status-div'>
+                            <img src={addIcon} alt="add icon" />
+                            <img src={ThreeDotIcon} alt="menu icon" />
+                        </div>
+                    </div>
+
+                    <div>
+                        {data.tickets
+                            .filter(ticket => ticket.userId === user.id)
+                            .map(ticket => (
                                 <DiplayCard
                                     key={ticket.id}
                                     ticketId={ticket.id}
@@ -85,12 +69,11 @@ const BodyOfData = () => {
                                     priorityIcon={getPriorityIcon(ticket.priority)}
                                 />
                             ))}
-                        </div>
                     </div>
-                );
-            })}
+                </div>
+            ))}
         </div>
     );
 };
 
-export default BodyOfData;
+export default BodyOfDataUser;
